@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.5</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.corto</groupId>
+    <artifactId>springboot-libreria</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>springboot-libreria</name>
+    <description>
+        Crear las entidades necesarias para un modelo de negocio de librería, de forma que al ejecutar la aplicación Spring Boot,
+        la base de datos sea generada automáticamente en PostgreSQL mediante JPA y spring.jpa.hibernate.ddl-auto=create.
+    </description>
+
+    <properties>
+        <java.version>17</java.version>
+        <db.host>localhost</db.host>
+        <db.port>5432</db.port>
+        <db.name>libreria_db</db.name>
+        <db.user>snrj</db.user>
+        <db.password></db.password>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Ejecuta un script en bash para crear la BD si no existe -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>create-database</id>
+                        <phase>initialize</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <executable>bash</executable>
+                            <arguments>
+                                <argument>-c</argument>
+                                <argument>
+                                    psql --host=${db.host} --port=${db.port} --username=${db.user} --dbname=postgres -tc "SELECT 1 FROM pg_database WHERE datname='${db.name}'" \
+                                    | grep -q 1 \
+                                    || psql --host=${db.host} --port=${db.port} --username=${db.user} --dbname=postgres -c "CREATE DATABASE ${db.name}"
+                                </argument>
+                            </arguments>
+                            <environmentVariables>
+                                <PGPASSWORD>${db.password}</PGPASSWORD>
+                            </environmentVariables>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
