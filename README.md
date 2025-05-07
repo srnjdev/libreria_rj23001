@@ -30,7 +30,7 @@ spring.jpa.properties.hibernate.format_sql=true
 Reemplaza **<USUARIO_POSTGRES>** y **<PASSWORD_POSTGRES>** por tus credenciales. Asegúrate de que la base libreria_db exista o usa el seeder automático.
 
 ## Creación de base de datos
-Spring Boot intenta crear la base `libreria_db` automáticamente. Si falta o falla la creación automática, puedes hacerlo manualmente:
+Spring Boot creará la base `libreria_db` automáticamente. Si falla la creación automática, puedes hacerlo manualmente:
 ```bash
 # Usando createdb (requiere rol válido)
 createdb -h localhost -U <USUARIO_POSTGRES> libreria_db
